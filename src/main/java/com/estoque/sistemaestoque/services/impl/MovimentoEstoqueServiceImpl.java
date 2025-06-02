@@ -43,6 +43,7 @@ public class MovimentoEstoqueServiceImpl implements MovimentoEstoqueService {
         }
 
         produtoRepository.save(produto);
+        movimento.getProduto().setId(dto.getProdutoId());
         movimento = repository.save(movimento);
         return mapper.toDTO(movimento);
     }

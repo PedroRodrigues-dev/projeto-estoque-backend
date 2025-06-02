@@ -13,9 +13,13 @@ import com.estoque.sistemaestoque.dtos.ProdutoEstoqueDTO;
 import com.estoque.sistemaestoque.dtos.ProdutoLucroDTO;
 import com.estoque.sistemaestoque.entities.MovimentoEstoque;
 import com.estoque.sistemaestoque.entities.Produto;
+import com.estoque.sistemaestoque.entities.TipoProduto;
+import com.estoque.sistemaestoque.entities.Fornecedor;
 import com.estoque.sistemaestoque.mappers.ProdutoMapper;
 import com.estoque.sistemaestoque.repositories.MovimentoEstoqueRepository;
 import com.estoque.sistemaestoque.repositories.ProdutoRepository;
+import com.estoque.sistemaestoque.repositories.TipoProdutoRepository;
+import com.estoque.sistemaestoque.repositories.FornecedorRepository;
 import com.estoque.sistemaestoque.services.ProdutoService;
 
 import lombok.RequiredArgsConstructor;
@@ -26,12 +30,27 @@ public class ProdutoServiceImpl implements ProdutoService {
 
     private final ProdutoRepository produtoRepository;
     private final MovimentoEstoqueRepository movimentoEstoqueRepository;
+    private final TipoProdutoRepository tipoProdutoRepository;
+    private final FornecedorRepository fornecedorRepository;
     private final ProdutoMapper mapper;
 
     @Override
     @Transactional
     public ProdutoDTO save(ProdutoDTO dto) {
         Produto produto = mapper.toEntity(dto);
+
+        // Carrega o TipoProduto
+        TipoProduto tipoProduto = tipoProdutoRepository.findById(dto.getTipoProdutoId())
+                .orElseThrow(() -> new RuntimeException("Tipo de produto não encontrado"));
+        produto.setTipoProduto(tipoProduto);
+
+        // Carrega o Fornecedor se existir
+        if (dto.getFornecedorId() != null) {
+            Fornecedor fornecedor = fornecedorRepository.findById(dto.getFornecedorId())
+                    .orElseThrow(() -> new RuntimeException("Fornecedor não encontrado"));
+            produto.setFornecedor(fornecedor);
+        }
+
         produto = produtoRepository.save(produto);
         return mapper.toDTO(produto);
     }
@@ -42,11 +61,23 @@ public class ProdutoServiceImpl implements ProdutoService {
         Produto produto = produtoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Produto não encontrado"));
 
-        produto.setCodigo(dto.getCodigo());
-        produto.setDescricao(dto.getDescricao());
-        produto.setValorFornecedor(dto.getValorFornecedor());
-        produto.setQuantidadeEstoque(dto.getQuantidadeEstoque());
-        produto.setAtivo(dto.getAtivo());
+        // Carrega o TipoProduto
+        TipoProduto tipoProduto = tipoProdutoRepository.findById(dto.getTipoProdutoId())
+                .orElseThrow(() -> new RuntimeException("Tipo de produto não encontrado"));
+
+        // Carrega o Fornecedor se existir
+        Fornecedor fornecedor = null;
+        if (dto.getFornecedorId() != null) {
+            fornecedor = fornecedorRepository.findById(dto.getFornecedorId())
+                    .orElseThrow(() -> new RuntimeException("Fornecedor não encontrado"));
+        }
+
+        // Atualiza os dados básicos
+        mapper.updateEntityFromDto(dto, produto);
+
+        // Atualiza as relações
+        produto.setTipoProduto(tipoProduto);
+        produto.setFornecedor(fornecedor);
 
         produto = produtoRepository.save(produto);
         return mapper.toDTO(produto);
