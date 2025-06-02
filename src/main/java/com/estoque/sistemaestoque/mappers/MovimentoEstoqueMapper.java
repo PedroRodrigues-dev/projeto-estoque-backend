@@ -6,13 +6,14 @@ import org.mapstruct.Mapping;
 import com.estoque.sistemaestoque.dtos.MovimentoEstoqueDTO;
 import com.estoque.sistemaestoque.entities.MovimentoEstoque;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = { ProdutoMapper.class })
 public interface MovimentoEstoqueMapper {
 
     @Mapping(source = "produto.id", target = "produtoId")
     @Mapping(source = "tipoMovimentacao", target = "tipoMovimentacao")
     @Mapping(source = "dataMovimentacao", target = "dataMovimentacao")
     @Mapping(source = "quantidadeMovimentada", target = "quantidadeMovimentada")
+    @Mapping(source = "produto", target = "produto")
     MovimentoEstoqueDTO toDTO(MovimentoEstoque entity);
 
     @Mapping(target = "produto.id", source = "produtoId")

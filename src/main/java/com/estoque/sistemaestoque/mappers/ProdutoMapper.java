@@ -7,7 +7,8 @@ import org.mapstruct.ReportingPolicy;
 import com.estoque.sistemaestoque.dtos.ProdutoDTO;
 import com.estoque.sistemaestoque.entities.Produto;
 
-@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
+@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE, uses = { TipoProdutoMapper.class,
+        FornecedorMapper.class })
 public interface ProdutoMapper {
     @Mapping(target = "tipoProduto.id", source = "tipoProdutoId")
     @Mapping(target = "fornecedor.id", source = "fornecedorId")
@@ -15,5 +16,7 @@ public interface ProdutoMapper {
 
     @Mapping(target = "tipoProdutoId", source = "tipoProduto.id")
     @Mapping(target = "fornecedorId", source = "fornecedor.id")
+    @Mapping(target = "tipoProduto", source = "tipoProduto")
+    @Mapping(target = "fornecedor", source = "fornecedor")
     ProdutoDTO toDTO(Produto entity);
 }

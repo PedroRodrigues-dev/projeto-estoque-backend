@@ -19,4 +19,5 @@ public class MovimentoEstoqueDTO {
     private Integer quantidadeMovimentada;
     private BigDecimal valorVenda;
     private LocalDateTime dataMovimentacao;
+    private ProdutoDTO produto;
 }

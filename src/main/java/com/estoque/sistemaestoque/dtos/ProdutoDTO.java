@@ -20,4 +20,6 @@ public class ProdutoDTO {
     private BigDecimal valorFornecedor;
     private Integer quantidadeEstoque;
     private Boolean ativo;
+    private TipoProdutoDTO tipoProduto;
+    private FornecedorDTO fornecedor;
 }
