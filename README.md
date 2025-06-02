@@ -308,3 +308,83 @@ Para executar os testes, use o comando:
 ```bash
 ./gradlew test
 ```
+
+## 🔄 Estrutura das Respostas
+
+### Produtos
+
+As respostas para endpoints de produtos incluem tanto os IDs de referência quanto os objetos completos relacionados:
+
+```json
+{
+  "id": 1,
+  "codigo": "PROD001",
+  "descricao": "Produto Teste",
+  "tipoProdutoId": 1,
+  "fornecedorId": 1,
+  "valorFornecedor": 100.0,
+  "quantidadeEstoque": 10,
+  "ativo": true,
+  "tipoProduto": {
+    "id": 1,
+    "nome": "Tipo Teste",
+    "descricao": "Descrição do Tipo"
+  },
+  "fornecedor": {
+    "id": 1,
+    "nome": "Fornecedor Teste",
+    "cnpj": "12345678901234",
+    "email": "fornecedor@teste.com",
+    "telefone": "1234567890"
+  }
+}
+```
+
+### Movimentações de Estoque
+
+As respostas para endpoints de movimentações incluem tanto o ID do produto quanto o objeto produto completo:
+
+```json
+{
+  "id": 1,
+  "produtoId": 1,
+  "tipoMovimentacao": "ENTRADA",
+  "quantidadeMovimentada": 5,
+  "valorVenda": 150.0,
+  "dataMovimentacao": "2024-03-14T10:00:00",
+  "produto": {
+    "id": 1,
+    "codigo": "PROD001",
+    "descricao": "Produto Teste",
+    "tipoProdutoId": 1,
+    "fornecedorId": 1,
+    "valorFornecedor": 100.0,
+    "quantidadeEstoque": 10,
+    "ativo": true,
+    "tipoProduto": {
+      "id": 1,
+      "nome": "Tipo Teste",
+      "descricao": "Descrição do Tipo"
+    },
+    "fornecedor": {
+      "id": 1,
+      "nome": "Fornecedor Teste",
+      "cnpj": "12345678901234",
+      "email": "fornecedor@teste.com",
+      "telefone": "1234567890"
+    }
+  }
+}
+```
+
+### CORS
+
+A API está configurada para aceitar requisições de origens específicas. Por padrão, aceita requisições de:
+
+- `http://localhost:5173`
+
+Para adicionar mais origens permitidas, configure no arquivo `application.properties`:
+
+```properties
+app.cors.allowed-origins=http://localhost:5173,http://seu-dominio.com
+```
